@@ -1,9 +1,9 @@
-FROM python:3.14-slim AS builder
+FROM python:3.13-slim AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
-FROM python:3.14-slim
+FROM python:3.13-slim
 RUN addgroup --system app && adduser --system --ingroup app app
 WORKDIR /app
 COPY --from=builder /root/.local /home/app/.local
