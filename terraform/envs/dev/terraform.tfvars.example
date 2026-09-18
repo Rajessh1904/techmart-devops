@@ -1,0 +1,4 @@
+project_id   = "your-gcp-project-id"
+project_name = "techmart"
+region       = "us-central1"
+github_repo  = "your-org/techmart-devops"

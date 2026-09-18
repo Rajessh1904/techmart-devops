@@ -1,0 +1,34 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: techmart-alerts
+  namespace: techmart-dev
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: techmart.rules
+      rules:
+        - alert: BackendCrashLooping
+          expr: rate(kube_pod_container_status_restarts_total{namespace="techmart-dev",container="backend"}[15m]) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Backend pod is crash-looping"
+
+        - alert: HighErrorRate
+          expr: sum(rate(http_requests_total{namespace="techmart-dev",status=~"5.."}[5m])) / sum(rate(http_requests_total{namespace="techmart-dev"}[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Backend 5xx error rate above 5%"
+
+        - alert: HPAMaxedOut
+          expr: kube_horizontalpodautoscaler_status_current_replicas{namespace="techmart-dev"} == kube_horizontalpodautoscaler_spec_max_replicas{namespace="techmart-dev"}
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "HPA has been at max replicas for 10+ minutes — consider raising the ceiling"

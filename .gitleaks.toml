@@ -1,0 +1,9 @@
+title = "gitleaks config for techmart-devops"
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+  '''terraform.tfvars.example''',
+]
